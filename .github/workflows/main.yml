@@ -22,8 +22,6 @@ jobs:
 
       - name: Preparar Android
         uses: android-actions/setup-android@v4
-        with:
-          packages: 'platform-tools'
 
       - name: Extraer proyecto
         run: |
