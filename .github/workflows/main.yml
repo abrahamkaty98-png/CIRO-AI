@@ -1,0 +1,45 @@
+name: Construir CIRO AI
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar proyecto
+        uses: actions/checkout@v4
+
+      - name: Preparar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Preparar Android
+        uses: android-actions/setup-android@v3
+
+      - name: Extraer proyecto
+        run: |
+          unzip -q CIRO_AI_Android_prototipo.zip -d extraido
+          find extraido -name settings.gradle.kts
+
+      - name: Preparar Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Construir APK
+        run: |
+          cd extraido/CIRO_AI_Android
+          gradle assembleDebug
+
+      - name: Guardar APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: CIRO-AI-APK
+          path: extraido/CIRO_AI_Android/app/build/outputs/apk/debug/*.apk
